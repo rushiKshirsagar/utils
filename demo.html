@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial & Health Calculators - Demo</title>
+    <style>
+        :root {
+            --bg: #0f1220;
+            --card: #171a2b;
+            --muted: #aab2d5;
+            --text: #e8ecff;
+            --accent: #7aa2ff;
+            --accent-2: #67e8f9;
+            --bad: #ff7a7a;
+            --good: #7affb0;
+            --ring: 0 0 0 3px rgba(122, 162, 255, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue";
+            color: var(--text);
+            background: radial-gradient(1000px 600px at 20% -10%, #1b2040 0%, #0f1220 60%) no-repeat, var(--bg);
+        }
+
+        .app-header {
+            padding: 24px 20px 6px;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            letter-spacing: 0.2px;
+        }
+
+        .app-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 20px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-button.active {
+            background: var(--accent);
+            color: var(--text);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .main-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 16px 40px;
+        }
+
+        .placeholder {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .placeholder h2 {
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .placeholder p {
+            margin: 8px 0;
+        }
+
+        .coming-soon {
+            background: rgba(122, 162, 255, 0.1);
+            border: 1px solid rgba(122, 162, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: inline-block;
+            font-size: 12px;
+            margin-top: 16px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        @media (min-width: 900px) {
+            .grid {
+                grid-template-columns: 1.1fr 0.9fr;
+            }
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 16px 16px 18px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .card h2 {
+            margin: 2px 0 12px;
+            font-size: 18px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin: 10px 0 6px;
+        }
+
+        input, select {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: #0f1220;
+            color: var(--text);
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            box-shadow: var(--ring);
+            border-color: rgba(122, 162, 255, 0.45);
+        }
+
+        .inline {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .seg {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px;
+            border-radius: 12px;
+        }
+
+        .seg button {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .seg button.active {
+            background: #0f1220;
+            color: var(--text);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(180deg, #1b2143, #151a34);
+            color: #e9efff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn.secondary {
+            background: #0f1220;
+            color: var(--muted);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .result-grid {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .kpi {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .kpi .label {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .kpi .value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .pill {
+            display: inline-block;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--muted);
+        }
+
+        .hl {
+            color: var(--accent);
+        }
+
+        .macros {
+            margin-top: 10px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .macro-row {
+            display: grid;
+            grid-template-columns: 1fr 80px 100px;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .macro-row input {
+            text-align: right;
+        }
+
+        .code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            background: #0b0e1a;
+            color: #d7e0ff;
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .foot {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>Financial & Health Calculators</h1>
+            <p>Comprehensive tools for your financial planning and health tracking</p>
+        </header>
+
+        <nav class="tab-navigation">
+            <button class="tab-button active" onclick="showTab('calorie')">Calorie Calculator</button>
+            <button class="tab-button" onclick="showTab('emi')">EMI Calculator</button>
+            <button class="tab-button" onclick="showTab('apy')">APY Calculator</button>
+            <button class="tab-button" onclick="showTab('mutual-funds')">Mutual Funds Return</button>
+            <button class="tab-button" onclick="showTab('loan')">Loan Estimator</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Calorie Calculator -->
+            <div id="calorie-tab">
+                <div class="grid">
+                    <!-- Inputs -->
+                    <section class="card">
+                        <h2>Inputs</h2>
+
+                        <div class="row">
+                            <div>
+                                <label>Sex</label>
+                                <div class="seg" id="sexSeg">
+                                    <button type="button" class="active" data-sex="male">Male</button>
+                                    <button type="button" data-sex="female">Female</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label>Age</label>
+                                <input id="age" type="number" min="10" max="100" value="29" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div>
+                                <label>Units</label>
+                                <div class="seg" id="unitSeg">
+                                    <button type="button" class="active" data-unit="imperial">Imperial</button>
+                                    <button type="button" data-unit="metric">Metric</button>
+                                </div>
+                            </div>
+                            <div class="inline" style="justify-content:space-between;margin-top:22px">
+                                <button id="prefill" class="btn secondary" type="button" title="Prefill your data">Prefill yours</button>
+                                <span class="pill">Equation: Mifflin–St Jeor</span>
+                            </div>
+                        </div>
+
+                        <!-- Height & Weight -->
+                        <div id="imperialBlock">
+                            <div class="row">
+                                <div>
+                                    <label>Height — feet</label>
+                                    <input id="heightFt" type="number" min="3" max="8" value="5" />
+                                </div>
+                                <div>
+                                    <label>Height — inches</label>
+                                    <input id="heightIn" type="number" min="0" max="11" value="9" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div>
+                                    <label>Weight — pounds</label>
+                                    <input id="weightLb" type="number" min="60" max="500" value="143" />
+                                </div>
+                                <div>
+                                    <label class="muted">Conversions</label>
+                                    <div class="code" id="impConv">143 lb → 64.86 kg • 5′9″ → 175.26 cm</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="metricBlock" style="display:none">
+                            <div class="row">
+                                <div>
+                                    <label>Height — cm</label>
+                                    <input id="heightCm" type="number" min="120" max="230" value="175" />
+                                </div>
+                                <div>
+                                    <label>Weight — kg</label>
+                                    <input id="weightKg" type="number" min="40" max="200" value="65" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Activity -->
+                        <div class="row">
+                            <div>
+                                <label>Activity level</label>
+                                <select id="activity">
+                                    <option value="1.2">Sedentary — little/no exercise (×1.20)</option>
+                                    <option value="1.375">Light — 1–3 days/week (×1.375)</option>
+                                    <option value="1.55" selected>Moderate — 3–5 days/week (×1.55)</option>
+                                    <option value="1.725">Active — 6–7 days/week (×1.725)</option>
+                                    <option value="1.9">Very active — hard exercise + physical job (×1.90)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>One-click: your routine</label>
+                                <button id="altDay" class="btn" type="button" title="Every other day ~ moderate">
+                                    Set to "every other day" (×1.55)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Macros -->
+                        <div class="card" style="margin-top:12px">
+                            <h2 style="margin-top:0">Macro split (editable)</h2>
+                            <div class="macros">
+                                <div class="macro-row">
+                                    <div><span class="pill">Protein</span></div>
+                                    <input id="proteinPct" type="number" min="10" max="40" value="25" />
+                                    <div class="muted">%</div>
+                                </div>
+                                <div class="macro-row">
+                                    <div><span class="pill">Carbs</span></div>
+                                    <input id="carbPct" type="number" min="30" max="70" value="50" />
+                                    <div class="muted">%</div>
+                                </div>
+                                <div class="macro-row">
+                                    <div><span class="pill">Fat</span></div>
+                                    <input id="fatPct" type="number" min="15" max="40" value="25" />
+                                    <div class="muted">%</div>
+                                </div>
+                                <div class="foot">Tip: Macros must add up to <strong>100%</strong>.</div>
+                            </div>
+                        </div>
+
+                        <div class="inline" style="margin-top:14px; gap:10px">
+                            <button id="calcBtn" class="btn" type="button">Calculate</button>
+                            <button id="resetBtn" class="btn secondary" type="button">Reset</button>
+                        </div>
+                    </section>
+
+                    <!-- Results -->
+                    <section class="card">
+                        <h2>Results</h2>
+
+                        <div class="result-grid" style="margin-bottom:10px">
+                            <div class="kpi">
+                                <div class="label">BMR (resting)</div>
+                                <div class="value" id="bmrOut">—</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Activity factor</div>
+                                <div class="value" id="actOut">—</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">TDEE (maintenance)</div>
+                                <div class="value hl" id="tdeeOut">—</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">BMI</div>
+                                <div class="value" id="bmiOut">—</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="card">
+                                <h2 style="margin-top:0">Targets</h2>
+                                <div class="row">
+                                    <div class="kpi">
+                                        <div class="label">Maintain</div>
+                                        <div class="value" id="maintOut">—</div>
+                                    </div>
+                                    <div class="kpi">
+                                        <div class="label">Slow cut (~-0.5 lb/wk)</div>
+                                        <div class="value" id="cutOut">—</div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px">
+                                    <div class="kpi">
+                                        <div class="label">Lean bulk</div>
+                                        <div class="value" id="bulkOut">—</div>
+                                    </div>
+                                    <div class="kpi">
+                                        <div class="label">Protein target (g)</div>
+                                        <div class="value" id="protOut">—</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <h2 style="margin-top:0">Macro breakdown @ maintenance</h2>
+                                <div class="code" id="macroOut">—</div>
+                            </div>
+                        </div>
+
+                        <h2 style="margin-top:14px">Equations</h2>
+                        <div class="code" id="eqOut">
+                            Mifflin–St Jeor (male): BMR = 10·kg + 6.25·cm − 5·age + 5
+                            TDEE = BMR × activity
+                            kcal → macros: protein = P%/4, carbs = C%/4, fat = F%/9
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Other Tabs (Placeholders) -->
+            <div id="emi-tab" class="placeholder" style="display:none">
+                <h2>EMI Calculator</h2>
+                <p>Calculate your Equated Monthly Installments for loans and mortgages.</p>
+                <p>Features coming soon:</p>
+                <ul style="text-align: left; display: inline-block; margin: 16px 0;">
+                    <li>Home loan EMI calculation</li>
+                    <li>Personal loan EMI calculation</li>
+                    <li>Car loan EMI calculation</li>
+                    <li>Interest rate comparison</li>
+                    <li>Amortization schedule</li>
+                    <li>Prepayment calculations</li>
+                </ul>
+                <div class="coming-soon">Coming Soon</div>
+            </div>
+
+            <div id="apy-tab" class="placeholder" style="display:none">
+                <h2>APY Calculator</h2>
+                <p>Calculate Annual Percentage Yield for your investments and savings accounts.</p>
+                <p>Features coming soon:</p>
+                <ul style="text-align: left; display: inline-block; margin: 16px 0;">
+                    <li>Compound interest calculations</li>
+                    <li>APY vs APR comparison</li>
+                    <li>Savings account comparison</li>
+                    <li>Certificate of Deposit (CD) calculations</li>
+                    <li>High-yield savings analysis</li>
+                    <li>Investment growth projections</li>
+                </ul>
+                <div class="coming-soon">Coming Soon</div>
+            </div>
+
+            <div id="mutual-funds-tab" class="placeholder" style="display:none">
+                <h2>Mutual Funds Return Calculator</h2>
+                <p>Calculate returns and analyze your mutual fund investments.</p>
+                <p>Features coming soon:</p>
+                <ul style="text-align: left; display: inline-block; margin: 16px 0;">
+                    <li>SIP (Systematic Investment Plan) calculator</li>
+                    <li>Lump sum investment returns</li>
+                    <li>XIRR calculation for irregular investments</li>
+                    <li>Goal-based investment planning</li>
+                    <li>Tax implications on returns</li>
+                    <li>Expense ratio impact analysis</li>
+                </ul>
+                <div class="coming-soon">Coming Soon</div>
+            </div>
+
+            <div id="loan-tab" class="placeholder" style="display:none">
+                <h2>Loan Estimator</h2>
+                <p>Estimate loan amounts, terms, and affordability for various loan types.</p>
+                <p>Features coming soon:</p>
+                <ul style="text-align: left; display: inline-block; margin: 16px 0;">
+                    <li>Loan amount eligibility calculator</li>
+                    <li>Debt-to-income ratio analysis</li>
+                    <li>Affordability assessment</li>
+                    <li>Down payment optimization</li>
+                    <li>Interest rate impact analysis</li>
+                    <li>Loan comparison tools</li>
+                </ul>
+                <div class="coming-soon">Coming Soon</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            document.getElementById('calorie-tab').style.display = 'none';
+            document.getElementById('emi-tab').style.display = 'none';
+            document.getElementById('apy-tab').style.display = 'none';
+            document.getElementById('mutual-funds-tab').style.display = 'none';
+            document.getElementById('loan-tab').style.display = 'none';
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').style.display = 'block';
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Include the original calorie calculator JavaScript here
+        const $ = (id) => document.getElementById(id);
+        const to2 = (n) => Number.isFinite(n) ? Math.round(n) : "—";
+        const clamp = (n, a, b) => Math.min(Math.max(n, a), b);
+
+        // UI refs
+        const sexSeg = $("sexSeg");
+        const unitSeg = $("unitSeg");
+        const age = $("age");
+
+        const heightFt = $("heightFt");
+        const heightIn = $("heightIn");
+        const weightLb = $("weightLb");
+        const heightCm = $("heightCm");
+        const weightKg = $("weightKg");
+        const impConv = $("impConv");
+
+        const imperialBlock = $("imperialBlock");
+        const metricBlock = $("metricBlock");
+
+        const activity = $("activity");
+        const altDay = $("altDay");
+        const prefillBtn = $("prefill");
+
+        const proteinPct = $("proteinPct");
+        const carbPct = $("carbPct");
+        const fatPct = $("fatPct");
+
+        const bmrOut = $("bmrOut");
+        const actOut = $("actOut");
+        const tdeeOut = $("tdeeOut");
+        const bmiOut = $("bmiOut");
+        const maintOut = $("maintOut");
+        const cutOut = $("cutOut");
+        const bulkOut = $("bulkOut");
+        const protOut = $("protOut");
+        const macroOut = $("macroOut");
+        const eqOut = $("eqOut");
+
+        const calcBtn = $("calcBtn");
+        const resetBtn = $("resetBtn");
+
+        // state
+        let sex = "male";
+        let unit = "imperial";
+
+        // segment toggles
+        sexSeg.addEventListener("click", (e)=>{
+            if(e.target.tagName !== "BUTTON") return;
+            [...sexSeg.children].forEach(b=>b.classList.remove("active"));
+            e.target.classList.add("active");
+            sex = e.target.dataset.sex;
+        });
+
+        unitSeg.addEventListener("click", (e)=>{
+            if(e.target.tagName !== "BUTTON") return;
+            [...unitSeg.children].forEach(b=>b.classList.remove("active"));
+            e.target.classList.add("active");
+            unit = e.target.dataset.unit;
+            imperialBlock.style.display = unit === "imperial" ? "" : "none";
+            metricBlock.style.display = unit === "metric" ? "" : "none";
+            updateConversions();
+        });
+
+        function updateConversions(){
+            if(unit!=="imperial") return;
+            const lb = parseFloat(weightLb.value||"0");
+            const ft = parseFloat(heightFt.value||"0");
+            const inc = parseFloat(heightIn.value||"0");
+            const kg = lb*0.45359237;
+            const cm = ((ft*12)+inc)*2.54;
+            impConv.textContent = `${to2(kg)} kg • ${to2(cm)} cm`;
+        }
+        [weightLb, heightFt, heightIn].forEach(el=>el.addEventListener("input", updateConversions));
+        updateConversions();
+
+        // activity quick set
+        altDay.addEventListener("click", ()=>{ activity.value = "1.55"; bounce(activity) });
+        prefillBtn.addEventListener("click", ()=>{
+            sex = "male";
+            age.value = 29;
+            heightFt.value = 5; heightIn.value = 9; weightLb.value = 143;
+            heightCm.value = 175; weightKg.value = 65;
+            [...sexSeg.children].forEach(b=>b.classList.remove("active"));
+            sexSeg.querySelector('[data-sex="male"]').classList.add("active");
+            activity.value = "1.55";
+            proteinPct.value = 25; carbPct.value = 50; fatPct.value = 25;
+            updateConversions(); calc();
+        });
+
+        // calculators
+        function getMetrics(){
+            let kg, cm;
+            if(unit === "imperial"){
+                const ft = Number(heightFt.value); const inc = Number(heightIn.value);
+                const lb = Number(weightLb.value);
+                cm = ((ft*12)+inc)*2.54;
+                kg = lb*0.45359237;
+            } else {
+                cm = Number(heightCm.value);
+                kg = Number(weightKg.value);
+            }
+            return { kg, cm };
+        }
+
+        function mifflinStJeorBMR({kg, cm, age, sex}){
+            // BMR = 10*kg + 6.25*cm - 5*age + s; s=+5 male, -161 female
+            const s = sex === "male" ? 5 : -161;
+            return 10*kg + 6.25*cm - 5*age + s;
+        }
+
+        function calcBMI({kg, cm}){
+            const m = cm/100;
+            return kg/(m*m);
+        }
+
+        function validateMacroSum(){
+            const p = Number(proteinPct.value||0);
+            const c = Number(carbPct.value||0);
+            const f = Number(fatPct.value||0);
+            return {sum: p+c+f, p, c, f};
+        }
+
+        function bounce(el){ el.style.transform="scale(1.02)"; setTimeout(()=>el.style.transform="",160); }
+
+        function calc(){
+            const ageVal = Number(age.value);
+            const act = Number(activity.value);
+            const metrics = getMetrics();
+
+            if(!Number.isFinite(metrics.kg) || !Number.isFinite(metrics.cm) || !Number.isFinite(ageVal)){
+                alert("Please provide valid numbers for age, height, and weight.");
+                return;
+            }
+
+            const bmr = mifflinStJeorBMR({kg:metrics.kg, cm:metrics.cm, age:ageVal, sex});
+            const tdee = bmr * act;
+            const bmi = calcBMI(metrics);
+
+            bmrOut.textContent = to2(bmr) + " kcal";
+            actOut.textContent = "× " + act.toFixed(2);
+            tdeeOut.textContent = to2(tdee) + " kcal";
+            bmiOut.textContent = bmi ? bmi.toFixed(1) : "—";
+
+            // targets
+            const maintain = tdee;
+            const cut = tdee - 500*0.5*2; // ~0.5 lb/week deficit ≈ 500 kcal/day*0.5? -> gentler: ~250 kcal/day
+            // Above: use gentle cut ≈ -350 kcal/day for ~0.5 lb/week depending on individual.
+            const gentleCut = tdee - 350; // use this for display
+            const bulk = tdee + 250;      // lean bulk ~ +250
+
+            maintOut.textContent = to2(maintain) + " kcal";
+            cutOut.textContent = to2(gentleCut) + " kcal";
+            bulkOut.textContent = to2(bulk) + " kcal";
+
+            // protein anchor (1.6–2.2 g/kg). Use mid 2.0 g/kg.
+            const proteinTargetG = metrics.kg * 2.0;
+            protOut.textContent = to2(proteinTargetG) + " g";
+
+            // macros @ maintenance
+            const {sum, p, c, f} = validateMacroSum();
+            if(sum !== 100){
+                macroOut.textContent = `Macros must equal 100%. (Current = ${sum}%)`;
+            } else {
+                const kcal = maintain;
+                const pG = (kcal * (p/100)) / 4;
+                const cG = (kcal * (c/100)) / 4;
+                const fG = (kcal * (f/100)) / 9;
+                macroOut.textContent =
+`Maintenance ${to2(kcal)} kcal with ${p}/${c}/${f} (%):
+• Protein:  ${to2(pG)} g
+• Carbs:    ${to2(cG)} g
+• Fat:      ${to2(fG)} g`;
+            }
+
+            // equations shown with numbers
+            eqOut.textContent =
+`Mifflin–St Jeor (${sex}):
+BMR = 10·kg + 6.25·cm − 5·age + s
+    = 10·${metrics.kg.toFixed(2)} + 6.25·${metrics.cm.toFixed(2)} − 5·${ageVal} + ${sex==="male"?5:-161}
+    = ${to2(bmr)} kcal
+
+TDEE = BMR × activity = ${to2(bmr)} × ${act.toFixed(2)} = ${to2(tdee)} kcal
+
+Macros @ maintenance:
+kcal × (macro%)/cal_per_gram
+protein & carbs: 4 kcal/g • fat: 9 kcal/g.`;
+        }
+
+        calcBtn.addEventListener("click", calc);
+
+        resetBtn.addEventListener("click", ()=>{
+            sex = "male";
+            unit = "imperial";
+            [...sexSeg.children].forEach(b=>b.classList.remove("active"));
+            sexSeg.querySelector('[data-sex="male"]').classList.add("active");
+            [...unitSeg.children].forEach(b=>b.classList.remove("active"));
+            unitSeg.querySelector('[data-unit="imperial"]').classList.add("active");
+            imperialBlock.style.display = "";
+            metricBlock.style.display = "none";
+
+            age.value = 29;
+            heightFt.value = 5; heightIn.value = 9; weightLb.value = 143;
+            heightCm.value = 175; weightKg.value = 65;
+            activity.value = "1.55";
+            proteinPct.value = 25; carbPct.value = 50; fatPct.value = 25;
+            updateConversions();
+
+            // clear outputs
+            [bmrOut, actOut, tdeeOut, bmiOut, maintOut, cutOut, bulkOut, protOut].forEach(el=>el.textContent="—");
+            macroOut.textContent = "—";
+            eqOut.textContent =
+`Mifflin–St Jeor (male): BMR = 10·kg + 6.25·cm − 5·age + 5
+TDEE = BMR × activity
+kcal → macros: protein = P%/4, carbs = C%/4, fat = F%/9`;
+        });
+
+        // live update conversions
+        ["input","change"].forEach(evt=>{
+            [heightCm, weightKg].forEach(el=>el.addEventListener(evt, ()=>{}));
+        });
+
+        // initial auto-calc with your data
+        calc();
+    </script>
+</body>
+</html>
