@@ -128,7 +128,7 @@ const LoanEstimator: React.FC = () => {
   useEffect(() => {
     calculateLoanEligibility();
     calculateDownPaymentAnalysis();
-  }, [loanType, monthlyIncome, existingEMIs, interestRate, loanTenure, creditScore, propertyValue]);
+  }, [loanType, monthlyIncome, existingEMIs, interestRate, loanTenure, creditScore, propertyValue, downPaymentAmount]);
 
   const getLoanTypeInfo = () => {
     switch (loanType) {
